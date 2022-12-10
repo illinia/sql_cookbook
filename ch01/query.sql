@@ -73,3 +73,10 @@ where comm is null;
 
 select coalesce(comm, 0)
 from EMP;
+
+1.13 패턴 검색하기
+
+select ename, job
+from EMP
+where deptno in (10, 20)
+    and (ename like '%I%' or job like '%ER');
