@@ -64,3 +64,39 @@ with cal (dy) as
 (select current
     union all
 select dy +)
+
+9.6 월의 특정 요일의 첫 번째 및 마지막 발생일 알아내기
+
+select first_monday,
+       case month(adddate(first_monday, 28))
+            when mth then adddate(first_monday, 28)
+                     else adddate(first_monday, 21)
+       end last_monday
+from (select case sign(dayofweek(dy) - 2)
+                  when 0 then dy
+                  when -1 then adddate(dy, abs(dayofweek(dy) - 2))
+                  when 1 then adddate(dy, (7 - (dayofweek(dy) - 2)))
+             end first_monday,
+             mth
+      from (select adddate(adddate(current_date, -day(current_date)), 1) dy,
+                   month(current_date) mth
+            from T1
+      )x
+) y;
+
+9.8 해당 연도의 분기 시작일 및 종료일 나열하기
+
+with recursive x (dy, cnt) as (
+    select adddate(current_date, (-dayofyear(current_date)) + 1) dy,
+           id
+    from T1
+        union all
+    select adddate(dy, interval 3 month), cnt + 1
+    from x
+    where cnt + 1 <= 4
+)
+select quarter(adddate(dy, -1)) QTR,
+       date_add(dy, interval -3 month) Q_start,
+       adddate(dy, -1) Q_end
+from x
+order by 1;
