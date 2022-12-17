@@ -10,7 +10,33 @@ CREATE DATABASE study;
 
 SHOW DATABASES;
 
-USER study;
+USE study;
+
+create table emp_project (
+        empno smallint,
+        ename varchar(20),
+        proj_id tinyint,
+        proj_start varchar(11),
+        proj_end varchar(11)
+);
+
+insert into emp_project values
+(7782, 'CLARK', 1, '16-JUN-2005', '18-JUN-2005'),
+(7782, 'CLARK', 4, '19-JUN-2005', '24-JUN-2005'),
+(7782, 'CLARK', 7, '22-JUN-2005', '25-JUN-2005'),
+(7782, 'CLARK', 10, '25-JUN-2005', '28-JUN-2005'),
+(7782, 'CLARK', 13, '28-JUN-2005', '02-JUL-2005'),
+(7839, 'KING', 2, '17-JUN-2005', '21-JUN-2005'),
+(7839, 'KING', 8, '23-JUN-2005', '25-JUN-2005'),
+(7839, 'KING', 14, '29-JUN-2005', '30-JUN-2005'),
+(7839, 'KING', 11, '26-JUN-2005', '27-JUN-2005'),
+(7839, 'KING', 5, '20-JUN-2005', '24-JUN-2005'),
+(7934, 'MILLER', 3, '18-JUN-2005', '22-JUN-2005'),
+(7934, 'MILLER', 12, '27-JUN-2005', '28-JUN-2005'),
+(7934, 'MILLER', 15, '30-JUN-2005', '03-JUL-2005'),
+(7934, 'MILLER', 9, '24-JUN-2005', '27-JUN-2005'),
+(7934, 'MILLER', 6, '21-JUN-2005', '23-JUN-2005');
+
 
 CREATE TABLE EMP
        (EMPNO integer NOT NULL,
