@@ -109,3 +109,27 @@ from (select deptno, ename, sal, hiredate, case when hiredate = max(hiredate) ov
                                            end latest_sal
       from EMP) x
 order by 1, 4 desc;
+
+
+11.12 간단한 예측 생성하기
+
+with recursive nrows(n) as (
+      select 1 from T1 union all
+      select n + 1 from nrows where n + 1 <= 3
+)
+select id,
+       order_date,
+       process_date,
+       case when nrows.n >= 2
+            then process_date + 1
+            else null
+       end as verified,
+       case when nrows.n = 3
+            then process_date + 2
+            else null
+       end as shipped
+from (select nrows.n id,
+             getdate() + nrows.n as order_date,
+             getdate() + nrows.n + 2 as process_date
+      from nrows) orders, nrows
+order by 1;
