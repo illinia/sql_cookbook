@@ -225,3 +225,20 @@ explain
 select 사원번호
 from 직급
 where 직급명 = 'Manager';
+
+
+# ref
+
+explain
+select 사원.사원번호, 직급.직급명
+from 사원, 직급
+where 사원.사원번호 = 직급.사원번호
+and 사원.사원번호 between 10001 and 10100;
+
+
+# Using index
+
+explain
+select 직급명
+from 직급
+where 사원번호 = 100000;

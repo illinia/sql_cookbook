@@ -81,3 +81,38 @@ select count(1) from 사원;
 * key_len
   * 사용한 인덱스 바이트 수
   * utf-8 기준 int 데이터 유형은 단위당 4바이트, varchar 데이터 유형은 3바이트
+* ref
+  * 테이블 조인시 어떤 조건으로 엑세스되었는지 정보
+* rows
+  * 접근하는 데이터의 모든 행 예측 항목
+* filtered
+  * db 엔진으로 가져온 데이터 대상 필터 조건에 따라 어느 정도 비율로 제거했는지 의미하는 항목
+* extra
+  * 어떻게 수행할 것이지 보여주는 항목
+  * Distinct
+    * 중복이 제거되어 유일한 값을 찾을 때 출력되는 정보. distinct, union 이 포함될때
+  * Using where
+    * where 절의 필터 조건을 사용해 mysql 엔진으로 가져온 데이터를 추출할 것이라는 의미
+  * Using temporary
+    * 중간 결과 저장하고자 임시 테이블 생성
+    * 메모리에 생성하거나 디스크에 생성하면 성능 저하될 수 있다
+  * Using index
+    * 인덱스만 읽어서 요청사항 처리 가능한 경우. 커버링 인덱스, 효율적
+  * Using filesort
+    * 정렬 필요 데이터를 메모리에 올려 정렬 작업 수행
+  * Using join buffer
+    * 조인 수행 위해 중간 데이터 결과 저장하는 조인 버퍼 사용
+  * Using union/ Using intersect/ Using sort_union
+    * 인덱스가 병합되어 실행될때 어떻게 병합했는지 정보 출력
+    * Using union 은 인덱스들을 합집합처럼 모두 결합, sql 문이 or 구문으로 작성된 경우
+    * Using intersect 는 인덱스들을 교집합처럼 추출, and 구문
+    * Using sort_union where 절의 or 구문이 동등조건이 아닐때
+  * Using index condition
+    * 필터 조건을 스토리지 엔진으로 전달하여 필터링 작업에 대한 mysql 엔진의 부하를 줄이는 방식
+    * 스토리지 엔진 결과를 mysql 엔진으로 전송하는 데이터양을 줄여 성능 효율 높이는 방법
+  * Using index condition(BKA)
+    * 데이터 검색 위해 배치 키 액세스 사용하는 방식
+  * Using index for group-by
+    * group by, distinct 포함될때는 인덱스로 정렬 작업 수행
+  * Not exists
+    * 하나의 일치 행을 찾으면 추가로 행을 더 검색하지 않아도 될 때 출력
