@@ -242,3 +242,43 @@ explain
 select 직급명
 from 직급
 where 사원번호 = 100000;
+
+# 3.2.4 확장된 실행 계획 수행
+
+# format = traditional
+explain format = traditional
+select *
+from 사원
+where 사원번호 between 100001 and 200000;
+
+# format = json
+explain format = json
+select *
+from 사원
+where 사원번호 between 100001 and 200000;
+
+# explain analyze
+explain analyze
+select *
+from 사원
+where 사원번호 between 100001 and 200000;
+
+
+# 3.3 프로파일링
+# 3.3.1 SQL 프로파일링 실행하기
+
+show variables like 'profiling%';
+
+set profiling = 'ON';
+
+select 사원번호
+from 사원
+where 사원번호 = 100000;
+
+show profiles;
+
+show profile for query 1;
+
+show profile all for query 1;
+
+show profile cpu for query 140;

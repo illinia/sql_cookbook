@@ -116,3 +116,34 @@ select count(1) from 사원;
     * group by, distinct 포함될때는 인덱스로 정렬 작업 수행
   * Not exists
     * 하나의 일치 행을 찾으면 추가로 행을 더 검색하지 않아도 될 때 출력
+
+### 3.2.4 확장된 실행 계획 수행
+
+* explain format = traditional
+* explain format = tree(안됨)
+* explain format = json
+* explain analyze
+
+## 3.3 프로파일링
+
+### 3.3.2 프로파일링 결과 해석하기
+
+* starting: SQL 문 시작
+* checking permissions: 필요 권한 확인
+* Opening tables: 테이블을 열기
+* After opening tables: 테이블을 연 이후
+* System lock: 시스템 잠금
+* Table lock: 테이블 잠금
+* init: 초기화
+* optimizing: 최적화
+* statistics: 통계
+* preparing: 준비
+* executing: 실행
+* Sending data: 데이터 보내기
+* end: 끝
+* query end: 질의 끝
+* closing tables: 테이블 닫기
+* Unlocking tables: 잠금 해제 테이블
+* freeing items: 항목 해방
+* updating status: 상태 업데이트
+* cleaning up: 청소
