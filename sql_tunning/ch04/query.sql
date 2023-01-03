@@ -21,7 +21,8 @@ explain
 select *
 from 사원
 # where 사원번호 between 11000 and 11009;
-where 사원번호 >= 11000 and 사원번호 <= 11009;
+where 사원번호 >= 11000
+  and 사원번호 <= 11009;
 
 
 # 4.2.2 사용하지 않는 함수를 포함하는 나쁜 sql 문
@@ -89,7 +90,7 @@ explain
 select *
 from 사원
 where 성별 = 'M'
-and 성 = 'Radwan';
+  and 성 = 'Radwan';
 
 
 # 4.2.5 습관적으로 중복을 제거하는
@@ -98,13 +99,13 @@ and 성 = 'Radwan';
 explain
 select distinct 사원.사원번호, 사원.이름, 사원.성, 부서관리자.부서번호
 from 사원
-join 부서관리자 on (사원.사원번호 = 부서관리자.사원번호);
+         join 부서관리자 on (사원.사원번호 = 부서관리자.사원번호);
 
 # 튜닝 결과
 explain
 select 사원.사원번호, 이름, 성, 부서번호
 from 사원
-join 부서관리자 on (사원.사원번호 = 부서관리자.사원번호);
+         join 부서관리자 on (사원.사원번호 = 부서관리자.사원번호);
 
 # 4.2.6 다수 쿼리를 union 연산자로만 합치는
 
@@ -113,28 +114,28 @@ explain
 select 'M' as 성별, 사원번호
 from 사원
 where 성별 = 'M'
-and 성 = 'Baba'
+  and 성 = 'Baba'
 
 union
 
 select 'F' as 성별, 사원번호
 from 사원
 where 성별 = 'F'
-and 성 = 'Baba';
+  and 성 = 'Baba';
 
 # 튜닝 후
 explain
 select 'M' as 성별, 사원번호
 from 사원
 where 성별 = 'M'
-and 성 = 'Baba'
+  and 성 = 'Baba'
 
 union all
 
 select 'F' as 성별, 사원번호
 from 사원
 where 성별 = 'F'
-and 성 = 'Baba';
+  and 성 = 'Baba';
 
 # 4.2.7 인덱스 고려 없이 열을 사용하는
 
@@ -157,7 +158,7 @@ explain
 select 사원번호
 from 사원
 where 입사일자 like '1989%'
-and 사원번호 > 100000;
+  and 사원번호 > 100000;
 
 show index from 사원;
 
@@ -178,13 +179,14 @@ explain
 select 사원번호
 from 사원 use index (I_입사일자)
 where 입사일자 Like '1989%'
-and 사원번호 > 100000;
+  and 사원번호 > 100000;
 
 explain
 select 사원번호
 from 사원
-where 입사일자 >= '1989-01-01' and 입사일자 < '1990-01-01'
-and 사원번호 > 100000;
+where 입사일자 >= '1989-01-01'
+  and 입사일자 < '1990-01-01'
+  and 사원번호 > 100000;
 
 # 4.2.9 동등 조건으로 인덱스를 사용하는
 
@@ -201,5 +203,35 @@ group by 출입문;
 # 튜닝 결과
 explain
 select *
-from 사원출입기록 ignore index(I_출입문)
+from 사원출입기록 ignore index (I_출입문)
 where 출입문 = 'B';
+
+# 4.2.10 범위 조건으로 인덱스를 사용하는
+explain
+select 이름, 성
+from 사원
+where 입사일자 between str_to_date('1994-10-01', '%Y-%m-%d')
+              and str_to_date('2000-12-31', '%Y-%m-%d')
+;
+
+# 튜닝 결과
+explain
+select 이름, 성
+from 사원
+where year(입사일자) between '1994' and '2000';
+
+# 4.3.1 작은 테이블이 먼저 조인에 참여하는
+
+# 튜닝 전
+explain
+select 매핑.사원번호, 부서.부서번호
+from 부서사원_매핑 매핑, 부서
+where 매핑.부서번호 = 부서.부서번호
+and 매핑.시작일자 >= '2002-03-01';
+
+# 튜닝 결과
+explain
+select straight_join 매핑.사원번호, 부서.부서번호
+from 부서사원_매핑 매핑, 부서
+where 매핑.부서번호 = 부서.부서번호
+and 매핑.시작일자 >= '2002-03-01';
