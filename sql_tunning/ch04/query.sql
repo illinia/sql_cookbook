@@ -235,3 +235,47 @@ select straight_join 매핑.사원번호, 부서.부서번호
 from 부서사원_매핑 매핑, 부서
 where 매핑.부서번호 = 부서.부서번호
 and 매핑.시작일자 >= '2002-03-01';
+
+# 4.3.2 메인 테이블에 계속 의존하는
+
+# 튜닝 전
+explain
+select 사원.사원번호, 사원.이름, 사원.성
+from 사원
+where 사원번호 > 450000
+and (select max(연봉)
+     from 급여
+     where 사원번호 = 사원.사원번호
+     ) > 100000;
+
+# 튜닝 결과
+explain
+select 사원.사원번호,
+       사원.이름,
+       사원.성
+from 사원, 급여
+where 사원.사원번호 > 450000
+and 사원.사원번호 = 급여.사원번호
+group by 사원.사원번호
+having max(급여.연봉) > 100000;
+
+# 4.3.3 불필요한 조인을 수행하는
+
+# 튜닝 전
+explain
+select count(distinct 사원.사원번호) as 데이터건수
+from 사원,
+     (select 사원번호
+      from 사원출입기록 기록
+      where 출입문 = 'A'
+) 기록
+where 사원.사원번호 = 기록.사원번호;
+
+# 튜닝 결과
+explain
+select count(1) as 데이터건수
+from 사원
+where exists(select 1
+    from 사원출입기록 기록
+    where 출입문 = 'A'
+    and 기록.사원번호 = 사원.사원번호);
